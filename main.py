@@ -12,7 +12,7 @@ from pathlib import Path
 
 # Import project modules
 from config.config import *
-from src.data.improved_data_collector import ImprovedDataCollector
+from src.data. import ImprovedDataCollector
 from src.analysis.basic_metrics import BasicMetricsAnalyzer
 from src.analysis.advanced_metrics import AdvancedMetricsAnalyzer
 from src.visualization.player_cards import PlayerCardVisualizer
