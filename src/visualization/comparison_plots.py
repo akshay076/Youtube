@@ -363,35 +363,40 @@ class PlayerComparisonVisualizer:
         fig.savefig(filename, dpi=300, bbox_inches='tight')
         logger.info(f"Saved {chart_name} chart to {filename}")
 
-# For testing
-if __name__ == "__main__":
+    # For testing
+    if __name__ == "__main__":
     # Initialize comparison visualizer
-    visualizer = PlayerComparisonVisualizer()
+        visualizer = PlayerComparisonVisualizer()
     
     # Create breakout potential comparison
-    fig1 = visualizer.create_breakout_potential_comparison()
+        fig1 = visualizer.create_breakout_potential_comparison()
     
     # Create impact comparison
-    fig2 = visualizer.create_impact_metrics_comparison()
+        fig2 = visualizer.create_impact_metrics_comparison()
     
     # Create form and trajectory comparison
-    fig3 = visualizer.create_form_trajectory_comparison()
+        fig3 = visualizer.create_form_trajectory_comparison()
     
     # Create top breakout candidates summary
-    fig4 = visualizer.create_top_breakout_candidates(top_n=5)
+        fig4 = visualizer.create_top_breakout_candidates(top_n=5)
     
     # Show the figures
-    plt.show()f5455c']  # Delhi Capitals colors: blue and red
+    # Show the figures (if needed during development)
+        plt.show()
+    
+    # Add team branding
+        team_name = "DELHI CAPITALS"
+        team_colors = ['#0078bc', '#f5455c']  # Delhi Capitals colors: blue and red
         plt.figtext(0.02, 0.02, team_name, fontsize=14, fontweight='bold', color=team_colors[0])
-        
-        # Adjust layout
+    
+    # Adjust layout
         plt.tight_layout()
-        
-        # Save the comparison chart
+    
+    # Save the comparison chart
         self.save_comparison_chart(fig, "breakout_potential_comparison")
-        
+    
         logger.info("Completed breakout potential comparison chart")
-        return fig
+    return fig
     
     def create_impact_comparison(self):
         """
@@ -639,4 +644,4 @@ if __name__ == "__main__":
         
         # Add team branding
         team_name = "DELHI CAPITALS"
-        team_colors = ['#0078bc', '#
+        team_colors = ['#0078bc', '#f5455c']  # Delhi Capitals colors: blue and red
