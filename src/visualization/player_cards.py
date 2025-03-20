@@ -355,222 +355,6 @@ class PlayerCardVisualizer:
         
         # Middle overs
         y_pos -= 0.15
-        opp_quality_score = opposition.get("opposition_quality_score", 0)
-        ax.text(0.05, y_pos, "Opposition Quality Score:", fontsize=9, fontweight='bold')
-        
-        y_pos -= 0.1
-        # Draw as a simple gauge
-        ax.add_patch(patches.Rectangle((0.05, y_pos-0.05), 0.8, 0.05, 
-                                     facecolor='#e0e0e0', edgecolor='none', alpha=0.5))
-        
-        # Normalize value
-        norm_oq = min(1.0, opp_quality_score / 100)
-        
-        # Draw gauge
-        ax.add_patch(patches.Rectangle((0.05, y_pos-0.05), 0.8*norm_oq, 0.05, 
-                                     facecolor='#2ecc71', edgecolor='none', alpha=0.8))
-        
-        # Add score text
-        ax.text(0.05, y_pos-0.1, f"Score: {opp_quality_score:.1f}/100", fontsize=8)
-    
-    def _add_venue_analysis_panel(self, ax):
-        """Add venue analysis panel to the player card."""
-        ax.set_facecolor('#ffffff')
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.axis('off')
-        
-        # Panel title
-        ax.text(0.5, 0.9, "Venue & Conditions Analysis", fontsize=12, fontweight='bold', ha='center')
-        
-        # Get venue metrics
-        venue = self.advanced_metrics.get("venue_condition", {})
-        
-        # Home vs Away performance comparison
-        home_avg = venue.get("home_average", 0)
-        away_avg = venue.get("away_average", 0)
-        home_matches = venue.get("home_matches", 0)
-        away_matches = venue.get("away_matches", 0)
-        
-        # Draw bar chart for home vs away comparison
-        y_pos = 0.75
-        bar_height = 0.1
-        max_avg = max(home_avg, away_avg, 30)  # At least 30 for scaling
-        
-        # Home performance
-        ax.text(0.05, y_pos, f"Home ({home_matches} matches)", fontsize=9)
-        ax.add_patch(patches.Rectangle((0.05, y_pos-bar_height), 0.8*(home_avg/max_avg), bar_height, 
-                                     facecolor='#3498db', edgecolor='none', alpha=0.8))
-        ax.text(0.05 + 0.8*(home_avg/max_avg) + 0.02, y_pos - bar_height/2, f"{home_avg:.1f}", 
-               fontsize=8, va='center')
-        
-        # Away performance
-        y_pos -= 0.15
-        ax.text(0.05, y_pos, f"Away ({away_matches} matches)", fontsize=9)
-        ax.add_patch(patches.Rectangle((0.05, y_pos-bar_height), 0.8*(away_avg/max_avg), bar_height, 
-                                     facecolor='#e74c3c', edgecolor='none', alpha=0.8))
-        ax.text(0.05 + 0.8*(away_avg/max_avg) + 0.02, y_pos - bar_height/2, f"{away_avg:.1f}", 
-               fontsize=8, va='center')
-        
-        # Home advantage factor
-        y_pos -= 0.15
-        home_advantage = venue.get("home_advantage_factor", 1)
-        ax.text(0.05, y_pos, "Home Advantage Factor:", fontsize=9, fontweight='bold')
-        y_pos -= 0.08
-        
-        if home_advantage > 1.2:
-            factor_text = "Strong home advantage"
-            color = '#2ecc71'  # Green
-        elif home_advantage > 1.0:
-            factor_text = "Moderate home advantage"
-            color = '#3498db'  # Blue
-        elif home_advantage >= 0.9:
-            factor_text = "Neutral (performs similarly)"
-            color = '#f39c12'  # Orange
-        else:
-            factor_text = "Performs better away"
-            color = '#e74c3c'  # Red
-        
-        ax.text(0.05, y_pos, f"{factor_text} ({home_advantage:.2f}x)", fontsize=8, color=color)
-        
-        # Venue adaptability score
-        y_pos -= 0.15
-        adaptability = venue.get("venue_adaptability_score", 0)
-        ax.text(0.05, y_pos, "Venue Adaptability Score:", fontsize=9, fontweight='bold')
-        
-        y_pos -= 0.1
-        # Draw as a simple gauge
-        ax.add_patch(patches.Rectangle((0.05, y_pos-0.05), 0.8, 0.05, 
-                                     facecolor='#e0e0e0', edgecolor='none', alpha=0.5))
-        
-        # Normalize value
-        norm_adapt = min(1.0, adaptability / 100)
-        
-        # Set color based on score
-        if norm_adapt >= 0.8:
-            color = '#2ecc71'  # Green
-            adapt_text = "Excellent"
-        elif norm_adapt >= 0.6:
-            color = '#3498db'  # Blue
-            adapt_text = "Good"
-        elif norm_adapt >= 0.4:
-            color = '#f39c12'  # Orange
-            adapt_text = "Average"
-        else:
-            color = '#e74c3c'  # Red
-            adapt_text = "Poor"
-        
-        ax.add_patch(patches.Rectangle((0.05, y_pos-0.05), 0.8*norm_adapt, 0.05, 
-                                     facecolor=color, edgecolor='none', alpha=0.8))
-        
-        # Add adaptability text
-        ax.text(0.05, y_pos-0.1, f"{adapt_text} ({adaptability:.1f}/100)", fontsize=8)
-    
-    def _add_breakout_potential_panel(self, ax):
-        """Add breakout potential panel to the player card."""
-        ax.set_facecolor('#f5f5f5')
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.axis('off')
-        
-        # Panel title
-        ax.text(0.5, 0.9, "Breakout Potential Assessment", fontsize=14, fontweight='bold', ha='center')
-        
-        # Get breakout potential metrics
-        breakout = self.advanced_metrics.get("breakout_potential", {})
-        score = breakout.get("breakout_potential_score", 0)
-        category = breakout.get("breakout_category", "N/A")
-        
-        # Set color based on category
-        if category == "Very High":
-            color = '#2ecc71'  # Green
-        elif category == "High":
-            color = '#3498db'  # Blue
-        elif category == "Moderate":
-            color = '#f39c12'  # Orange
-        elif category == "Low":
-            color = '#e67e22'  # Dark orange
-        else:
-            color = '#e74c3c'  # Red
-        
-        # Draw large score circle
-        circle = patches.Circle((0.2, 0.6), 0.12, facecolor=color, edgecolor='white', linewidth=2)
-        ax.add_patch(circle)
-        ax.text(0.2, 0.6, f"{int(score)}", fontsize=18, color='white', 
-               ha='center', va='center', fontweight='bold')
-        
-        # Add category
-        ax.text(0.2, 0.4, f"{category}", fontsize=14, 
-               ha='center', va='center', fontweight='bold')
-        ax.text(0.2, 0.32, "Breakout Potential", fontsize=10, 
-               ha='center', va='center')
-        
-        # Add key strengths
-        key_strengths = breakout.get("key_strengths", [])
-        if key_strengths:
-            ax.text(0.45, 0.75, "Key Strengths:", fontsize=12, fontweight='bold')
-            for i, strength in enumerate(key_strengths):
-                ax.text(0.48, 0.7 - i*0.08, f"• {strength}", fontsize=10)
-        
-        # Add areas for improvement
-        areas_for_improvement = breakout.get("areas_for_improvement", [])
-        if areas_for_improvement:
-            ax.text(0.45, 0.45, "Areas for Improvement:", fontsize=12, fontweight='bold')
-            for i, area in enumerate(areas_for_improvement):
-                ax.text(0.48, 0.4 - i*0.08, f"• {area}", fontsize=10)
-        
-        # Add experience level
-        experience = breakout.get("experience_level", "Unknown")
-        ax.text(0.75, 0.75, f"Experience Level: {experience}", fontsize=10)
-        
-        # Add conclusion statement
-        if score >= 80:
-            conclusion = "Elite breakout potential. Strong performer across all metrics."
-        elif score >= 65:
-            conclusion = "High breakout potential. Demonstrates strong ability in key areas."
-        elif score >= 50:
-            conclusion = "Moderate breakout potential. Shows promise but needs consistency."
-        elif score >= 35:
-            conclusion = "Limited breakout potential. Significant improvement needed."
-        else:
-            conclusion = "Very limited breakout potential. Major development required."
-        
-        ax.text(0.5, 0.15, "Conclusion:", fontsize=12, fontweight='bold', ha='center')
-        ax.text(0.5, 0.08, conclusion, fontsize=10, ha='center')
-    
-    def save_player_card(self, fig):
-        """Save the player card visualization to a file."""
-        filename = os.path.join(VISUALIZATION_DIR, f"{self.player_name.replace(' ', '_')}_player_card.png")
-        fig.savefig(filename, dpi=300, bbox_inches='tight')
-        logger.info(f"Saved player card for {self.player_name} to {filename}")
-
-# For testing
-if __name__ == "__main__":
-    # Test with sample player data
-    from src.data.data_collector import DataCollector
-    from src.analysis.basic_metrics import BasicMetricsAnalyzer
-    from src.analysis.advanced_metrics import AdvancedMetricsAnalyzer
-    
-    # Initialize data collector
-    collector = DataCollector()
-    
-    # Get data for a test player
-    test_player = POTENTIAL_BREAKOUT_PLAYERS[0]  # First potential breakout player
-    player_data = collector.get_player_stats(test_player)
-    
-    # Calculate metrics
-    basic_analyzer = BasicMetricsAnalyzer(player_data)
-    basic_metrics = basic_analyzer.calculate_all_metrics()
-    
-    advanced_analyzer = AdvancedMetricsAnalyzer(player_data, basic_metrics)
-    advanced_metrics = advanced_analyzer.calculate_all_metrics()
-    
-    # Create player card
-    visualizer = PlayerCardVisualizer(test_player["name"], basic_metrics, advanced_metrics)
-    fig = visualizer.create_player_card()
-    
-    # Show the figure
-    plt.show()
         ax.text(0.05, y_pos, "Middle (7-15)", fontsize=9)
         ax.add_patch(patches.Rectangle((0.05, y_pos-bar_height), 0.9*(mid_sr/max_sr), bar_height, 
                                      facecolor='#f39c12', edgecolor='none', alpha=0.8))
@@ -818,3 +602,139 @@ if __name__ == "__main__":
         
         # Add opposition quality score
         y_pos -= 0.15
+        opp_quality_score = opposition.get("opposition_quality_score", 0)
+        ax.text(0.05, y_pos, "Opposition Quality Score:", fontsize=9, fontweight='bold')
+        
+        y_pos -= 0.1
+        # Draw as a simple gauge
+        ax.add_patch(patches.Rectangle((0.05, y_pos-0.05), 0.8, 0.05, 
+                                     facecolor='#e0e0e0', edgecolor='none', alpha=0.5))
+        
+        # Normalize value
+        norm_oq = min(1.0, opp_quality_score / 100)
+        
+        # Draw gauge
+        ax.add_patch(patches.Rectangle((0.05, y_pos-0.05), 0.8*norm_oq, 0.05, 
+                                     facecolor='#2ecc71', edgecolor='none', alpha=0.8))
+        
+        # Add score text
+        ax.text(0.05, y_pos-0.1, f"Score: {opp_quality_score:.1f}/100", fontsize=8)
+    
+    def _add_venue_analysis_panel(self, ax):
+        """Add venue analysis panel to the player card."""
+        ax.set_facecolor('#ffffff')
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis('off')
+        
+        # Panel title
+        ax.text(0.5, 0.9, "Venue & Conditions Analysis", fontsize=12, fontweight='bold', ha='center')
+        
+        # Get venue metrics
+        venue = self.advanced_metrics.get("venue_condition", {})
+        
+        # Home vs Away performance comparison
+        home_avg = venue.get("home_average", 0)
+        away_avg = venue.get("away_average", 0)
+        home_matches = venue.get("home_matches", 0)
+        away_matches = venue.get("away_matches", 0)
+        
+        # Draw bar chart for home vs away comparison
+        y_pos = 0.75
+        bar_height = 0.1
+        max_avg = max(home_avg, away_avg, 30)  # At least 30 for scaling
+        
+        # Home performance
+        ax.text(0.05, y_pos, f"Home ({home_matches} matches)", fontsize=9)
+        ax.add_patch(patches.Rectangle((0.05, y_pos-bar_height), 0.8*(home_avg/max_avg), bar_height, 
+                                     facecolor='#3498db', edgecolor='none', alpha=0.8))
+        ax.text(0.05 + 0.8*(home_avg/max_avg) + 0.02, y_pos - bar_height/2, f"{home_avg:.1f}", 
+               fontsize=8, va='center')
+        
+        # Away performance
+        y_pos -= 0.15
+        ax.text(0.05, y_pos, f"Away ({away_matches} matches)", fontsize=9)
+        ax.add_patch(patches.Rectangle((0.05, y_pos-bar_height), 0.8*(away_avg/max_avg), bar_height, 
+                                     facecolor='#e74c3c', edgecolor='none', alpha=0.8))
+        ax.text(0.05 + 0.8*(away_avg/max_avg) + 0.02, y_pos - bar_height/2, f"{away_avg:.1f}", 
+               fontsize=8, va='center')
+        
+        # Venue adaptability score
+        y_pos -= 0.15
+        adaptability = venue.get("venue_adaptability_score", 0)
+        ax.text(0.05, y_pos, "Venue Adaptability:", fontsize=9, fontweight='bold')
+        ax.text(0.05, y_pos-0.1, f"Score: {adaptability:.1f}/100", fontsize=9)
+    
+    def _add_breakout_potential_panel(self, ax):
+        """Add breakout potential panel to the player card."""
+        ax.set_facecolor('#f5f5f5')
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis('off')
+        
+        # Panel title
+        ax.text(0.5, 0.9, "Breakout Potential Assessment", fontsize=14, fontweight='bold', ha='center')
+        
+        # Get breakout potential metrics
+        breakout = self.advanced_metrics.get("breakout_potential", {})
+        score = breakout.get("breakout_potential_score", 0)
+        category = breakout.get("breakout_category", "N/A")
+        
+        # Set color based on category
+        if category == "Very High":
+            color = '#2ecc71'  # Green
+        elif category == "High":
+            color = '#3498db'  # Blue
+        elif category == "Moderate":
+            color = '#f39c12'  # Orange
+        elif category == "Low":
+            color = '#e67e22'  # Dark orange
+        else:
+            color = '#e74c3c'  # Red
+        
+        # Draw large score circle
+        circle = patches.Circle((0.2, 0.6), 0.12, facecolor=color, edgecolor='white', linewidth=2)
+        ax.add_patch(circle)
+        ax.text(0.2, 0.6, f"{int(score)}", fontsize=18, color='white', 
+               ha='center', va='center', fontweight='bold')
+        
+        # Add category
+        ax.text(0.2, 0.4, f"{category}", fontsize=14, 
+               ha='center', va='center', fontweight='bold')
+        ax.text(0.2, 0.32, "Breakout Potential", fontsize=10, 
+               ha='center', va='center')
+        
+        # Add key strengths
+        key_strengths = breakout.get("key_strengths", [])
+        if key_strengths:
+            ax.text(0.45, 0.75, "Key Strengths:", fontsize=12, fontweight='bold')
+            for i, strength in enumerate(key_strengths[:3]):  # Only show top 3
+                ax.text(0.48, 0.7 - i*0.08, f"• {strength}", fontsize=10)
+        
+        # Add areas for improvement
+        areas_for_improvement = breakout.get("areas_for_improvement", [])
+        if areas_for_improvement:
+            ax.text(0.45, 0.45, "Areas for Improvement:", fontsize=12, fontweight='bold')
+            for i, area in enumerate(areas_for_improvement[:2]):  # Only show top 2
+                ax.text(0.48, 0.4 - i*0.08, f"• {area}", fontsize=10)
+        
+        # Add conclusion statement
+        if score >= 80:
+            conclusion = "Elite breakout potential. Strong performer across all metrics."
+        elif score >= 65:
+            conclusion = "High breakout potential. Demonstrates strong ability in key areas."
+        elif score >= 50:
+            conclusion = "Moderate breakout potential. Shows promise but needs consistency."
+        elif score >= 35:
+            conclusion = "Limited breakout potential. Significant improvement needed."
+        else:
+            conclusion = "Very limited breakout potential. Major development required."
+        
+        ax.text(0.5, 0.15, "Conclusion:", fontsize=12, fontweight='bold', ha='center')
+        ax.text(0.5, 0.08, conclusion, fontsize=10, ha='center')
+    
+    def save_player_card(self, fig):
+        """Save the player card visualization to a file."""
+        filename = os.path.join(VISUALIZATION_DIR, f"{self.player_name.replace(' ', '_')}_player_card.png")
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
+        logger.info(f"Saved player card for {self.player_name} to {filename}")
