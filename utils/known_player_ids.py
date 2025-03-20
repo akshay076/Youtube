@@ -1,8 +1,3 @@
-"""
-Known player IDs module for Delhi Capitals player analysis.
-This module provides a lookup dictionary for player IDs on ESPNCricinfo.
-"""
-
 def get_known_player_id(player_name):
     """
     Return known ESPN Cricinfo player IDs for Delhi Capitals players.
@@ -43,7 +38,12 @@ def get_known_player_id(player_name):
         "Ricky Bhui": "822313",
         "Harry Brook": "1020612",
         "Vicky Ostwal": "1239533",
-        "Swastik Chikara": "1260285"
+        "Swastik Chikara": "1260285",
+        
+        # Normalize some names (optional, but helps with variations)
+        "Vicky Oswal": "1239533",
+        "Swastik Chikara": "1260285",
+        "Swastik": "1260285"
     }
     
-    return known_ids.get(player_name)
+    return known_ids.get(player_name) or known_ids.get(player_name.lower())

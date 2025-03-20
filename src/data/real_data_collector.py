@@ -115,59 +115,6 @@ class RealDataCollector:
         logger.warning(f"Could not find ID for player: {player_name}")
         return None
     
-    def get_player_id_from_direct_url(self, player_name):
-        """
-        Get player ID by trying direct URL patterns.
-        
-        Args:
-            player_name (str): Name of the player
-            
-        Returns:
-            str: Player ID if found, None otherwise
-        """
-        # Format name for URL (lowercase, spaces to hyphens)
-        url_name = player_name.lower().replace(" ", "-")
-        
-        # Define URLs to try
-        urls_to_try = [
-            f"https://www.espncricinfo.com/player/{url_name}",
-            f"https://www.espncricinfo.com/cricketers/{url_name}"
-        ]
-        
-        for url in urls_to_try:
-            try:
-                logger.info(f"Trying direct URL: {url}")
-                response = requests.get(url, headers=self.headers, timeout=10)
-                
-                # If redirected to a player page, extract the ID from the final URL
-                if response.status_code == 200:
-                    # Extract the ID from the URL or page content
-                    match = re.search(r'/player/(\d+)', response.url)
-                    if match:
-                        player_id = match.group(1)
-                        logger.info(f"Found player ID for {player_name} via direct URL: {player_id}")
-                        return player_id
-                    
-                    # If not in URL, try to find in page content
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    links = soup.select('a[href*="/player/"]')
-                    
-                    for link in links:
-                        href = link.get('href')
-                        match = re.search(r'/player/(\d+)', href)
-                        if match:
-                            player_id = match.group(1)
-                            logger.info(f"Found player ID for {player_name} in page content: {player_id}")
-                            return player_id
-            
-            except Exception as e:
-                logger.error(f"Error retrieving {url}: {e}")
-                
-            # Be nice to the server
-            time.sleep(1)
-        
-        return None
-    
     def get_player_id_from_search(self, player_name):
         """
         Get player ID by searching ESPNCricinfo.
